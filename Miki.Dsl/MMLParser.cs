@@ -48,7 +48,7 @@ namespace Miki.Dsl
 
 			T t = Activator.CreateInstance<T>();
 
-			foreach (var i in t.GetType().GetProperties())
+			foreach (var i in t.GetType().GetRuntimeProperties())
 			{
 				if (mml.allObject.ContainsKey(i.Name.ToLower()))
 				{
@@ -57,24 +57,13 @@ namespace Miki.Dsl
 					{
 						type = Nullable.GetUnderlyingType(type);
 					}
-					MethodInfo method = type.GetMethod("Parse", new[] { typeof(string) }, null);
+					MethodInfo method = type.GetRuntimeMethod("Parse", new[] { typeof(string) });
 					object parsedOutput = method.Invoke(null, new[] { mml.allObject[i.Name.ToLower()].ToString() });
 
 					i.SetValue(t, parsedOutput);
 				}
 			}
 			return t;
-		}
-
-		public static object SerializeGeneric(string type, string arguments)
-		{
-			Type[] types = Assembly.GetEntryAssembly().GetTypes();
-			var wantedType = types.Where(x => x.Name.ToLower() == type.ToLower());
-			object genType = Activator.CreateInstance(wantedType.First());
-			MMLParser mml = new MMLParser(arguments);
-			MethodInfo method = mml.GetType().GetMethod("Serialize")
-										 .MakeGenericMethod(new Type[] { genType.GetType() });
-			return method.Invoke(mml, null);
 		}
 
 		public bool Accept(char c)
