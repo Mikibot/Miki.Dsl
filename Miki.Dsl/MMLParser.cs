@@ -9,18 +9,20 @@ namespace Miki.Dsl
 {
 	public class MMLParser
 	{
-		char currentChar => restString.FirstOrDefault();
-		string restString;
+        int _index = 0;
+        string _argumentString;
 
-		public MMLParser(string arguments)
+        char _currentChar => CanTake() ? _argumentString[_index] : '\0';
+
+        public MMLParser(string arguments)
 		{
-			restString = arguments;
+			_argumentString = arguments;
 		}
 
 		public MSLResponse Parse()
 		{
 			List<MMLObject> mml = new List<MMLObject>();
-			while (!string.IsNullOrWhiteSpace(restString))
+			while (CanTake())
 			{
 				if (Accept('-'))
 				{
@@ -68,7 +70,7 @@ namespace Miki.Dsl
 
 		public bool Accept(char c)
 		{
-			if (currentChar == c)
+			if (_currentChar == c)
 			{
 				Next();
 				return true;
@@ -78,23 +80,33 @@ namespace Miki.Dsl
 
 		private void Next()
 		{
-			restString = restString.Substring(1);
+            _index++;
 		}
 
-		private string TakeUntil(char c)
+        private bool CanTake()
+        {
+            return _argumentString.Length > _index;
+        }
+
+		private string TakeUntil(params char[] c)
 		{
-			string val = restString.Split(c)[0];
-			restString = restString.Substring(val.Length);
+            string val = "";
+            while (CanTake() && !c.Any(x => x ==_currentChar))
+            {
+                val += _currentChar;
+                Next();
+            }
 			return val;
 		}
 
 		private string ParseName()
 		{
 			string output = "";
-			while(restString[0] != ':' && restString[0] != ' ')
+
+			while(char.IsLetterOrDigit(_currentChar))
 			{
-				output += restString.First();
-				Next();
+                output += _currentChar;
+                Next();
 			}
 			return output;
 		}
