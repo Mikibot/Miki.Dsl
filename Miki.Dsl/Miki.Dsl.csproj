@@ -3,7 +3,6 @@
   <PropertyGroup>
     <TargetFramework>netstandard1.6</TargetFramework>
     <PackageId>Miki.Dsl</PackageId>
-    <PackageVersion>1.1.0</PackageVersion>
     <Authors>Velddev</Authors>
     <Description>A mini-language parser.</Description>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
@@ -11,6 +10,7 @@
     <Copyright></Copyright>
     <PackageTags>language miki bot dsl</PackageTags>
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+    <Version>1.2.0</Version>
 </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">

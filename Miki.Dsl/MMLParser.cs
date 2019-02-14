@@ -103,7 +103,9 @@ namespace Miki.Dsl
 		{
 			string output = "";
 
-			while(char.IsLetterOrDigit(_currentChar))
+			while(char.IsLetterOrDigit(_currentChar) 
+                || _currentChar == '-'
+                || _currentChar == '_')
 			{
                 output += _currentChar;
                 Next();
